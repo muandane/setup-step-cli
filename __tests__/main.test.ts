@@ -1,75 +1,68 @@
-jest.mock('@actions/core')
-jest.mock('../src/setup-step-cli')
-import {run} from '../src/main'
-import {afterEach, expect, jest, test} from '@jest/globals'
-const core = require('@actions/core')
-const step = require('../src/setup-step-cli')
+/**
+ * Unit tests for the action's main functionality, src/main.ts
+ */
+import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import * as core from '../__fixtures__/core.js'
+import * as step from '../__fixtures__/setup-step-cli.js'
 
-afterEach(() => {
-  jest.clearAllMocks()
-})
+// Mocks should be declared before the module being tested is imported.
+jest.unstable_mockModule('@actions/core', () => core)
+jest.unstable_mockModule('../src/setup-step-cli.js', () => step)
 
-test('should succeed calling main program entrypoint with latest version', async () => {
-  // Mock getting Actions input for latest version and return value for installStepCli
-  const version = 'latest'
-  core.getInput = jest.fn().mockReturnValueOnce(version)
-  Object.defineProperty(step, 'installStepCli', {
-    value: jest.fn().mockImplementationOnce(() => Promise.resolve())
+// The module being tested should be imported dynamically.
+const { run } = await import('../src/main.js')
+
+describe('main.ts', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
   })
 
-  // Run function and validate steps
-  run()
-  expect(step.installStepCli).toHaveBeenCalledWith('latest')
-})
+  it('should succeed calling main program entrypoint with latest version', async () => {
+    const version = 'latest'
+    core.getInput.mockReturnValueOnce(version)
+    step.installStepCli.mockResolvedValueOnce('step')
 
-test('should succeed calling main program entrypoint with specific version', async () => {
-  // Mock getting Actions input for a specific version and return value for installStepCli
-  const version = '0.0.0'
-  core.getInput = jest.fn().mockReturnValueOnce(version)
-  Object.defineProperty(step, 'installStepCli', {
-    value: jest.fn().mockImplementationOnce(() => Promise.resolve())
+    await run()
+    expect(step.installStepCli).toHaveBeenCalledWith('latest')
   })
 
-  // Run function and validate steps
-  run()
-  expect(step.installStepCli).toHaveBeenCalledWith('0.0.0')
-})
+  it('should succeed calling main program entrypoint with specific version', async () => {
+    const version = '0.0.0'
+    core.getInput.mockReturnValueOnce(version)
+    step.installStepCli.mockResolvedValueOnce('step')
 
-test('should fail version input validation', async () => {
-  // Mock getting Actions input and return value for installStepCli
-  const version = 'notasemver'
-  core.getInput = jest.fn().mockReturnValueOnce(version)
-
-  // Run function and validate steps
-  run()
-  expect(step.installStepCli).toHaveBeenCalledTimes(0)
-  expect(core.setFailed).toHaveBeenCalledWith(
-    'The supplied input notasemver is not a valid version. Please supply a semver format like major.minor.hotfix'
-  )
-})
-
-test('should fail calling main program entrypoint with Error thrown', async () => {
-  // Mock installStepCli throwing error
-  const version = '0.0.0'
-  core.getInput = jest.fn().mockReturnValueOnce(version)
-  step.installStepCli.mockImplementationOnce(() => {
-    throw new Error('some failure')
+    await run()
+    expect(step.installStepCli).toHaveBeenCalledWith('0.0.0')
   })
 
-  // Run function and validate steps
-  run()
-  expect(step.installStepCli).toHaveBeenCalled
-  expect(core.setFailed).toHaveBeenCalledWith('some failure')
-})
+  it('should fail version input validation', async () => {
+    const version = 'notasemver'
+    core.getInput.mockReturnValueOnce(version)
 
-test('should fail calling main program entrypoint without Error thrown', async () => {
-  // Mock installStepCli rejected without error
-  const version = '0.0.0'
-  core.getInput = jest.fn().mockReturnValueOnce(version)
-  step.installStepCli.mockImplementationOnce(() => Promise.reject())
+    await run()
+    expect(step.installStepCli).toHaveBeenCalledTimes(0)
+    expect(core.setFailed).toHaveBeenCalledWith(
+      'The supplied input notasemver is not a valid version. Please supply a semver format like major.minor.hotfix'
+    )
+  })
 
-  // Run function and validate steps
-  run()
-  expect(step.installStepCli).toHaveBeenCalled
-  expect(core.setFailed).toHaveBeenCalledTimes(0)
+  it('should fail calling main program entrypoint with Error thrown', async () => {
+    const version = '0.0.0'
+    core.getInput.mockReturnValueOnce(version)
+    step.installStepCli.mockRejectedValueOnce(new Error('some failure'))
+
+    await run()
+    expect(step.installStepCli).toHaveBeenCalled()
+    expect(core.setFailed).toHaveBeenCalledWith('some failure')
+  })
+
+  it('should fail calling main program entrypoint without Error thrown', async () => {
+    const version = '0.0.0'
+    core.getInput.mockReturnValueOnce(version)
+    step.installStepCli.mockRejectedValueOnce('not an error')
+
+    await run()
+    expect(step.installStepCli).toHaveBeenCalled()
+    expect(core.setFailed).toHaveBeenCalledTimes(0)
+  })
 })

@@ -1,47 +1,78 @@
 {
-  "name": "puppetlabs-setup-step-cli",
-  "version": "1.1.2",
-  "private": true,
+  "name": "setup-step-cli",
   "description": "A custom GitHub Action that sets up the Smallstep step-cli tool",
-  "main": "lib/main.js",
-  "scripts": {
-    "build": "tsc",
-    "format": "prettier --write '**/*.ts'",
-    "format-check": "prettier --check '**/*.ts'",
-    "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
-  },
+  "version": "0.0.1",
+  "author": "MOUALHI Zine EL Abidine",
+  "type": "module",
+  "private": true,
+  "homepage": "https://github.com/muandane/setup-step-cli ",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/puppetlabs/setup-step-cli.git"
+    "url": "git+https://github.com/muandane/setup-step-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/muandane/setup-step-cli/issues"
   },
   "keywords": [
     "actions",
     "node",
     "setup"
   ],
-  "author": "Jake Spain <jake.spain@pupept.com>",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "bundle": "npm run format:write && npm run package",
+    "ci-test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
+    "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
+    "format:write": "npx prettier --write .",
+    "format:check": "npx prettier --check .",
+    "lint": "npx eslint .",
+    "local-action": "npx @github/local-action . src/main.ts .env",
+    "package": "npx rimraf ./dist && npx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "package:watch": "npm run package -- --watch",
+    "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
+    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+  },
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.9.0",
+    "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
     "@actions/io": "^1.1.2",
     "@actions/tool-cache": "^2.0.1",
     "@octokit/request": "^6.2.0"
   },
   "devDependencies": {
-    "@types/node": "^18.6.3",
-    "@typescript-eslint/parser": "^5.32.0",
-    "@vercel/ncc": "^0.34.0",
-    "eslint": "^8.21.0",
-    "eslint-plugin-github": "^4.3.7",
-    "eslint-plugin-jest": "^26.7.0",
-    "jest": "^27.2.5",
-    "js-yaml": "^4.1.0",
-    "prettier": "2.7.1",
-    "ts-jest": "^27.1.2",
-    "typescript": "^4.7.4"
+    "@eslint/compat": "^1.4.0",
+    "@github/local-action": "^6.0.2",
+    "@jest/globals": "^30.2.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jest": "^29.2.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "make-coverage-badge": "^1.2.0",
+    "prettier": "^3.7.4",
+    "prettier-eslint": "^16.4.2",
+    "rollup": "^4.53.3",
+    "ts-jest": "^29.4.6",
+    "ts-jest-resolver": "^2.0.1",
+    "typescript": "^5.9.3"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*"
   }
 }

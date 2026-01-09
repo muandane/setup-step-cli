@@ -1,6 +1,11 @@
 import * as core from '@actions/core'
-import * as step from './setup-step-cli'
+import * as step from './setup-step-cli.js'
 
+/**
+ * The main function for the action.
+ *
+ * @returns Resolves when the action is complete.
+ */
 export async function run(): Promise<void> {
   try {
     const version: string = core.getInput('version')
@@ -22,5 +27,3 @@ function validateInput(version: string): void {
     )
   }
 }
-
-run()

@@ -1,11 +1,13 @@
 name: 'Setup Smallstep step-cli tool'
-description: 'Downloads and installs the Smallstep step-cli a specified version of the step-cli tool.'
-author: 'Puppet, Inc.'
+description:
+  'Downloads and installs the Smallstep step-cli a specified version of the
+  step-cli tool.'
+author: 'MOUALHI Zine EL Abidine.'
 inputs:
   version:
     required: true
     description: 'The version of the step-cli tool to install.'
     default: 'latest'
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: node24
+  main: dist/index.js

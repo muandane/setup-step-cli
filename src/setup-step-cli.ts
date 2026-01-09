@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
-import {request} from '@octokit/request'
+import { request } from '@octokit/request'
 
 export async function installStepCli(version: string): Promise<string> {
   let artifactVersion
