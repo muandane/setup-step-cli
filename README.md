@@ -60,9 +60,9 @@ designed to streamline the process of tagging and pushing new releases for
 GitHub Actions.
 
 1. Update the version in `package.json`
-2. Run `npm run all` to ensure everything is built and tested
-3. Run `script/release` to create and push release tags
-4. Create a GitHub release with release notes
+1. Run `npm run all` to ensure everything is built and tested
+1. Run `script/release` to create and push release tags
+1. Create a GitHub release with release notes
 
 For more information about versioning your action, see
 [Versioning](https://github.com/actions/toolkit/blob/main/docs/action-versioning.md)
