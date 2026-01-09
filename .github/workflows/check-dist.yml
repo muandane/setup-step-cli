@@ -59,11 +59,17 @@ jobs:
             ls -la ./
             exit 1
           fi
-          if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
+          # Stage the built files to normalize line endings
+          git add dist/
+          # Check for actual content differences (ignoring whitespace-only changes)
+          # Suppress "No newline at end of file" warnings by redirecting stderr
+          if ! git diff --cached --ignore-space-at-eol --ignore-blank-lines --exit-code dist/ 2>/dev/null; then
             echo "Detected uncommitted changes after build. See status below:"
-            git diff --ignore-space-at-eol --text dist/
+            git diff --cached --ignore-space-at-eol --ignore-blank-lines dist/ 2>&1 | grep -v "^\\\ No newline" || true
+            git reset
             exit 1
           fi
+          git reset
 
       # If `dist/` was different than expected, upload the expected version as a
       # workflow artifact.
