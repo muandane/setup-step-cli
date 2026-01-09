@@ -5,7 +5,7 @@
   "author": "MOUALHI Zine EL Abidine",
   "type": "module",
   "private": true,
-  "homepage": "https://github.com/muandane/setup-step-cli ",
+  "homepage": "https://github.com/muandane/setup-step-cli",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/muandane/setup-step-cli.git"
