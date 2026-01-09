@@ -3,6 +3,9 @@ description:
   'Downloads and installs the Smallstep step-cli a specified version of the
   step-cli tool.'
 author: 'MOUALHI Zine EL Abidine.'
+branding:
+  icon: 'arrow-down-circle'
+  color: 'yellow'
 inputs:
   version:
     required: true
